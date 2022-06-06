@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: interface
+  name: interface
+  namespace: default
+spec:
+  type: NodePort
+  ports:
+  - name: interface-port
+    nodePort: 30106
+    port: 80
+    targetPort: 80
+  selector:
+    app: interface
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: interface
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: interface
+  template:
+    metadata:
+      labels:
+        app: interface
+    spec:
+      containers:
+      - env:
+        image: abdelghanimeliani/interface
+        imagePullPolicy: IfNotPresent
+        name: interface
+        ports:
+        - containerPort: 80
