@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pt
+  name: pt
+  namespace: default
+spec:
+  type: NodePort
+  ports:
+  - name: pt-port
+    nodePort: 30170
+    port: 5900
+    targetPort: 5900
+  selector:
+    app: pt
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pt
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pt
+  template:
+    metadata:
+      labels:
+        app: pt
+    spec:
+      containers:
+      - env:
+        image: ayoubmokhtari/pt8
+        imagePullPolicy: IfNotPresent
+        name: pt
+        ports:
+        - containerPort: 5900
